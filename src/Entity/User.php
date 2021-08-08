@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -41,9 +43,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $password;
 
+    /**
+     * @ORM\OneToMany(targetEntity=TrackedFood::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $trackedFood;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
+        $this->trackedFood = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -133,5 +141,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection|TrackedFood[]
+     */
+    public function getTrackedFood(): Collection
+    {
+        return $this->trackedFood;
+    }
+
+    public function addTrackedFood(TrackedFood $trackedFood): self
+    {
+        if (!$this->trackedFood->contains($trackedFood)) {
+            $this->trackedFood[] = $trackedFood;
+            $trackedFood->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrackedFood(TrackedFood $trackedFood): self
+    {
+        if ($this->trackedFood->removeElement($trackedFood)) {
+            // set the owning side to null (unless already changed)
+            if ($trackedFood->getUser() === $this) {
+                $trackedFood->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

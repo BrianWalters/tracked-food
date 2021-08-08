@@ -8,6 +8,24 @@
                 <p>
                     <a href="{{ path('app_logout') }}">Logout</a>
                 </p>
+                <p>
+                    <a href="{{ path('configure') }}">Configure</a>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <h2>Tracked foods</h2>
+                <ul>
+                    {% for food in trackedFood %}
+                        <li>{{ food.description }}</li>
+                    {% else %}
+                        <li>No tracked foods created yet. You should <a href="{{ path('configure') }}">configure</a> some.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-6">
+
             </div>
         </div>
     </main>
