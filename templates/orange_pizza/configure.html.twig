@@ -5,8 +5,27 @@
 {% block body %}
     <main class="container">
         <div class="row">
+            <div class="col-12">
+                <h1>Configure</h1>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-6">
-
+                <h2>Tracked foods</h2>
+                <ul>
+                    {% for food in trackedFood %}
+                        <li>
+                            <strong>{{ food.description }}</strong> every <strong>{{ food.timeInterval|date }}</strong>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <h3>Create new tracked food</h3>
+                {{ form_start(newTrackedFoodForm) }}
+                {{ form_widget(newTrackedFoodForm) }}
+                <p>
+                    <button class="btn btn-primary" type="submit">Create</button>
+                </p>
+                {{ form_end(newTrackedFoodForm) }}
             </div>
         </div>
     </main>
