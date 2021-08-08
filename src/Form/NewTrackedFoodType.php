@@ -30,7 +30,7 @@ class NewTrackedFoodType extends AbstractType
             'multiple' => false,
             'choices' => [
                 'Day(s)' => 'day',
-                'Weeks(s)' => 'week',
+                'Week(s)' => 'week',
 //                'Month(s)' => 'month',
             ]
         ]);

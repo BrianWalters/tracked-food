@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Log;
+use App\Entity\TrackedFood;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,6 +19,32 @@ class LogRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Log::class);
+    }
+
+    /**
+     * @return Log[]
+     */
+    public function findLogsForUser(User $user): array
+    {
+        $qb = $this->createQueryBuilder('log');
+
+        $qb->join('log.trackedFood', 'tracked_food');
+        $qb->andWhere('tracked_food.user = :user');
+        $qb->setParameter('user', $user->getId()->toBinary());
+        $qb->orderBy('log.createdAt', 'DESC');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findLastLogFor(TrackedFood $trackedFood): ?Log
+    {
+        $qb = $this->createQueryBuilder('log');
+
+        $qb->andWhere('log.trackedFood = :trackedFood');
+        $qb->setParameter('trackedFood', $trackedFood);
+        $qb->orderBy('log.createdAt', 'DESC');
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     // /**

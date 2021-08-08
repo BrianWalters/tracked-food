@@ -16,16 +16,59 @@
         <div class="row">
             <div class="col-6">
                 <h2>Tracked foods</h2>
-                <ul>
+                <div class="row row-cols-1 row-cols-md-3 g-4">
                     {% for food in trackedFood %}
-                        <li>{{ food.description }}</li>
+                        <div class="col">
+                            <div class="card text-white {{ isOk(food) ? 'bg-success' : 'bg-danger' }}">
+                                <div class="card-header">
+                                    <h4 class="card-title">{{ food.description }}</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div>
+                                        {% if isOk(food) %}
+                                            👍 Ok to eat
+                                        {% else %}
+                                            👎 Stay away
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     {% else %}
-                        <li>No tracked foods created yet. You should <a href="{{ path('configure') }}">configure</a> some.</li>
+                        <div class="card">
+                            <div class="card-body">
+                                No tracked foods created yet. You should <a href="{{ path('configure') }}">configure</a>
+                                some.
+                            </div>
+                        </div>
                     {% endfor %}
-                </ul>
+                </div>
             </div>
             <div class="col-6">
-
+                <h2>Logs</h2>
+                <h3>New log</h3>
+                {{ form_start(newLogForm) }}
+                {{ form_widget(newLogForm) }}
+                <p>
+                    <button class="btn btn-primary" type="submit">I ate this right now</button>
+                </p>
+                {{ form_end(newLogForm) }}
+                <h3>Past logs</h3>
+                <ul>
+                    {% for log in logs %}
+                        <li>
+                            <p>You ate <strong>{{ log.trackedFood.description }}</strong> <u
+                                    title="{{ log.createdAt|date('M j, Y', 'America/Chicago') }}">{{ log.createdAt|ago }}</u>
+                                {% if log.description %}
+                                    <br>
+                                    <small>{{ log.description }}</small>
+                                {% endif %}
+                            </p>
+                        </li>
+                    {% else %}
+                        <li>No logs created yet.</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </main>

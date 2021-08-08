@@ -26,6 +26,11 @@ class Log
      */
     private $trackedFood;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $description;
+
     public function __construct(TrackedFood $trackedFood)
     {
         $this->trackedFood = $trackedFood;
@@ -39,5 +44,17 @@ class Log
     public function getTrackedFood(): ?TrackedFood
     {
         return $this->trackedFood;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
     }
 }

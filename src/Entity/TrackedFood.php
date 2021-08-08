@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\TrackedFoodRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -80,5 +81,16 @@ class TrackedFood
     public function getLogs(): Collection
     {
         return $this->logs;
+    }
+
+    public function getLastLog(): ?Log
+    {
+        $collection = $this->logs->matching(
+            Criteria::create()
+                ->orderBy(['createdAt' => 'DESC'])
+                ->setMaxResults(1)
+        );
+
+        return $collection->get(0);
     }
 }

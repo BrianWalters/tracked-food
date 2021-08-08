@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\TrackedFood;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +19,15 @@ class TrackedFoodRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TrackedFood::class);
+    }
+
+    public function getUserQueryBuilder(User $user): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('tracked_food');
+        $qb->andWhere('tracked_food.user = :user');
+        $qb->setParameter('user', $user->getId()->toBinary());
+
+        return $qb;
     }
 
     // /**
