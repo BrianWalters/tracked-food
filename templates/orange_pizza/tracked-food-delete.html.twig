@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Delete tracked food | {{ parent() }}{% endblock %}
+
+{% block body %}
+    <main class="container">
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <p>Delete this tracked food and all related logs?</p>
+                <form method="post">
+                    <input type="hidden" name="id" value="{{ trackedFood.id }}">
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}

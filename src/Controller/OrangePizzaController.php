@@ -28,8 +28,9 @@ class OrangePizzaController extends AbstractController
     ): Response {
         $dto = new LogDto();
         $user = $this->getUser();
-        if (!$user instanceof User)
+        if (!$user instanceof User) {
             throw new \Exception('Wrong user class.');
+        }
 
         $newLogForm = $this->createForm(NewLogType::class, $dto, [
             'user' => $user,
@@ -95,6 +96,29 @@ class OrangePizzaController extends AbstractController
                     'user' => $this->getUser(),
                 ]
             )
+        ]);
+    }
+
+    #[Route('/configure/tracked-food/{id}/delete', name: 'tracked-food-delete', methods: ['GET', 'POST'])]
+    public function deleteTrackedFood(Request $request, $id, TrackedFoodRepository $trackedFoodRepository, EntityManagerInterface $em)
+    {
+        $trackedFood = $trackedFoodRepository->find($id);
+        if (!$trackedFood) {
+            throw $this->createNotFoundException();
+        }
+
+        if ($this->getUser() !== $trackedFood->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (Request::METHOD_POST === $request->getMethod()) {
+            $em->remove($trackedFood);
+            $em->flush();
+            return $this->redirectToRoute('configure');
+        }
+
+        return $this->render('orange_pizza/tracked-food-delete.html.twig', [
+            'trackedFood' => $trackedFood,
         ]);
     }
 }

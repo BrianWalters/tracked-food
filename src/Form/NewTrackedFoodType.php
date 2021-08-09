@@ -32,7 +32,8 @@ class NewTrackedFoodType extends AbstractType
                 'Day(s)' => 'day',
                 'Week(s)' => 'week',
 //                'Month(s)' => 'month',
-            ]
+            ],
+            'help' => 'If you want to do once a month, try something like 30 days or 4 weeks.'
         ]);
     }
 
