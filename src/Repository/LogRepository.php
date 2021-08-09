@@ -24,7 +24,7 @@ class LogRepository extends ServiceEntityRepository
     /**
      * @return Log[]
      */
-    public function findLogsForUser(User $user): array
+    public function findLogsForUser(User $user, ?int $limit = 20): array
     {
         $qb = $this->createQueryBuilder('log');
 
@@ -32,6 +32,7 @@ class LogRepository extends ServiceEntityRepository
         $qb->andWhere('tracked_food.user = :user');
         $qb->setParameter('user', $user->getId()->toBinary());
         $qb->orderBy('log.createdAt', 'DESC');
+        $qb->setMaxResults(20);
 
         return $qb->getQuery()->getResult();
     }
