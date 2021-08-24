@@ -28,6 +28,8 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFunction('isOk', [$this, 'isOk']),
+            new TwigFunction('howMuchLonger', [$this, 'howMuchLonger']),
+            new TwigFunction('nextAllowedDate', [$this, 'nextAllowedDate'])
         ];
     }
 
@@ -39,5 +41,23 @@ class AppExtension extends AbstractExtension
                 new \DateTime('now'),
                 $trackedFood->getLastLog()
             );
+    }
+
+    public function howMuchLonger(TrackedFood $trackedFood): ?\DateInterval
+    {
+        return $this->trackedFoodCalculator
+            ->howMuchLonger(
+                $trackedFood,
+                new \DateTime('now'),
+                $trackedFood->getLastLog()
+            );
+    }
+
+    public function nextAllowedDate(TrackedFood $trackedFood): \DateTime
+    {
+        return $this->trackedFoodCalculator->getNextAllowedDate(
+            $trackedFood->getLastLog(),
+            $trackedFood
+        );
     }
 }

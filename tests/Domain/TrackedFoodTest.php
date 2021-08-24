@@ -83,4 +83,45 @@ class TrackedFoodTest extends TestCase
             )
         );
     }
+
+    public function testHowMuchLonger()
+    {
+        $trackedFood = new TrackedFood(
+            'test food',
+            \DateInterval::createFromDateString('1 week'),
+            $this->makeTestUser()
+        );
+
+        $aug1Log = new Log(
+            $trackedFood
+        );
+        $aug1Log->setCreatedAt(new \DateTime('2021-08-01T00:00:00'));
+
+        $actual = $this->trackedFoodCalculator->howMuchLonger(
+            $trackedFood,
+            new \DateTime('2021-08-07T00:00:00'),
+            $aug1Log
+        );
+
+        $this->assertEquals(1, $actual->d);
+        $this->assertEquals(0, $actual->h);
+        $this->assertEquals(0, $actual->m);
+    }
+
+    public function testHowMuchLonger_noLong()
+    {
+        $trackedFood = new TrackedFood(
+            'test food',
+            \DateInterval::createFromDateString('1 week'),
+            $this->makeTestUser()
+        );
+
+        $actual = $this->trackedFoodCalculator->howMuchLonger(
+            $trackedFood,
+            new \DateTime('2021-08-07T00:00:00'),
+            null
+        );
+
+        $this->assertNull($actual);
+    }
 }

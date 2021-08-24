@@ -29,6 +29,9 @@
                                             👍 Ok to eat
                                         {% else %}
                                             👎 Stay away
+                                            <p>
+                                                <small>You can eat {{ nextAllowedDate(food)|ago }}</small>
+                                            </p>
                                         {% endif %}
                                     </div>
                                 </div>
