@@ -65,9 +65,19 @@ class TrackedFood
         return $this->description;
     }
 
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+
     public function getTimeInterval(): ?\DateInterval
     {
         return $this->timeInterval;
+    }
+
+    public function setTimeInterval(\DateInterval $interval): void
+    {
+        $this->timeInterval = $interval;
     }
 
     public function getUser(): ?User

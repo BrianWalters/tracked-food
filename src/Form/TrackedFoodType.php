@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class NewTrackedFoodType extends AbstractType
+class TrackedFoodType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

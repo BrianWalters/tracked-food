@@ -7,8 +7,9 @@ use App\DataStructure\TrackedFoodDto;
 use App\Entity\Log;
 use App\Entity\TrackedFood;
 use App\Entity\User;
+use App\Form\EditTrackedFoodType;
 use App\Form\NewLogType;
-use App\Form\NewTrackedFoodType;
+use App\Form\TrackedFoodType;
 use App\Repository\LogRepository;
 use App\Repository\TrackedFoodRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -68,7 +69,7 @@ class OrangePizzaController extends AbstractController
         EntityManagerInterface $em
     ) {
         $dto = new TrackedFoodDto();
-        $newTrackedFoodForm = $this->createForm(NewTrackedFoodType::class, $dto);
+        $newTrackedFoodForm = $this->createForm(TrackedFoodType::class, $dto);
         $newTrackedFoodForm->handleRequest($request);
 
         if ($newTrackedFoodForm->isSubmitted() && $newTrackedFoodForm->isValid()) {
@@ -119,6 +120,44 @@ class OrangePizzaController extends AbstractController
 
         return $this->render('orange_pizza/tracked-food-delete.html.twig', [
             'trackedFood' => $trackedFood,
+        ]);
+    }
+
+    #[Route('/configure/tracked-food/{id}/edit', name: 'tracked-food-edit', methods: ['GET', 'POST'])]
+    public function editTrackedFood(Request $request, $id, TrackedFoodRepository $trackedFoodRepository, EntityManagerInterface $em)
+    {
+        $trackedFood = $trackedFoodRepository->find($id);
+        if (!$trackedFood) {
+            throw $this->createNotFoundException();
+        }
+
+        if ($this->getUser() !== $trackedFood->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $dto = new TrackedFoodDto();
+        $dto->description = $trackedFood->getDescription();
+        $dto->timeIntervalType = 'day';
+        $dto->timeIntervalCount = $trackedFood->getTimeInterval()->d;
+        $form = $this->createForm(TrackedFoodType::class, $dto);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $trackedFood->setDescription($dto->description);
+            $trackedFood->setTimeInterval(
+                \DateInterval::createFromDateString($dto->timeIntervalCount . ' ' . $dto->timeIntervalType)
+            );
+
+            $em->persist($trackedFood);
+            $em->flush();
+
+            return $this->redirectToRoute('configure');
+        }
+
+        return $this->render('tracked-food/edit.html.twig', [
+            'trackedFood' => $trackedFood,
+            'form' => $form->createView(),
         ]);
     }
 }

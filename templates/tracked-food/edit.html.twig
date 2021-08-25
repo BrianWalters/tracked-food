@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ trackedFood.description }}| {{ parent() }}{% endblock %}
+
+{% block body %}
+    <main class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1>Editing "{{ trackedFood.description }}"</h1>
+
+                <p>
+                    <a href="{{ path('configure') }}">Back</a>
+                </p>
+
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <p>
+                    <button class="btn btn-primary" type="submit">Update</button>
+                </p>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </main>
+{% endblock %}

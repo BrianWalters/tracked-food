@@ -20,6 +20,7 @@
                         <li>
                             <strong>{{ food.description }}</strong> every <strong>{{ food.timeInterval|date }}</strong>
                             <a href="{{ path('tracked-food-delete', { id: food.id }) }}">Delete</a>
+                            <a href="{{ path('tracked-food-edit', { id: food.id }) }}">Edit</a>
                         </li>
                     {% endfor %}
                 </ul>
