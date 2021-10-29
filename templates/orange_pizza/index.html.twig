@@ -60,12 +60,16 @@
                 <ul>
                     {% for log in logs %}
                         <li>
-                            <p>You ate <strong>{{ log.trackedFood.description }}</strong> <u
-                                    title="{{ log.createdAt|date('M j, Y', 'America/Chicago') }}">{{ log.createdAt|ago }}</u>
+                            <p>
+                                You ate <strong>{{ log.trackedFood.description }}</strong>
+                                <u title="{{ log.eatenAt|date('M j, Y', 'America/Chicago') }}">
+                                    {{ log.eatenAt|ago }}
+                                </u>
                                 {% if log.description %}
                                     <br>
                                     <small>{{ log.description }}</small>
                                 {% endif %}
+                                <small><a href="{{ path('log_edit', {'id': log.id}) }}">Edit</a></small>
                             </p>
                         </li>
                     {% else %}

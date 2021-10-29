@@ -7,7 +7,7 @@ use App\DataStructure\TrackedFoodDto;
 use App\Entity\Log;
 use App\Entity\TrackedFood;
 use App\Entity\User;
-use App\Form\EditTrackedFoodType;
+use App\Form\EditLogType;
 use App\Form\NewLogType;
 use App\Form\TrackedFoodType;
 use App\Repository\LogRepository;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class OrangePizzaController extends AbstractController
+class AppController extends AbstractController
 {
     #[Route('/', name: 'home')]
     public function index(
@@ -62,6 +62,46 @@ class OrangePizzaController extends AbstractController
         ]);
     }
 
+    #[Route('/log/{id}/edit', name: 'log_edit', methods: ['GET', 'POST'])]
+    public function editLog(
+        $id,
+        Request $request,
+        LogRepository $logRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $log = $logRepository->find($id);
+        $user = $this->getUser();
+
+        if (!$log) {
+            throw $this->createNotFoundException();
+        }
+
+        if ($log->getTrackedFood()->getUser() !== $user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (Request::METHOD_POST === $request->getMethod() && $request->request->has('submit_delete')) {
+            $entityManager->remove($log);
+            $entityManager->flush();
+            return $this->redirectToRoute('home');
+        }
+
+        $form = $this->createForm(EditLogType::class, $log);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($log);
+            $entityManager->flush();
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('app/log-edit.html.twig', [
+            'log' => $log,
+            'form' => $form->createView(),
+        ]);
+    }
+
     #[Route('/configure', name: 'configure')]
     public function configure(
         Request $request,
@@ -101,8 +141,12 @@ class OrangePizzaController extends AbstractController
     }
 
     #[Route('/configure/tracked-food/{id}/delete', name: 'tracked-food-delete', methods: ['GET', 'POST'])]
-    public function deleteTrackedFood(Request $request, $id, TrackedFoodRepository $trackedFoodRepository, EntityManagerInterface $em)
-    {
+    public function deleteTrackedFood(
+        Request $request,
+        $id,
+        TrackedFoodRepository $trackedFoodRepository,
+        EntityManagerInterface $em
+    ) {
         $trackedFood = $trackedFoodRepository->find($id);
         if (!$trackedFood) {
             throw $this->createNotFoundException();
@@ -124,8 +168,12 @@ class OrangePizzaController extends AbstractController
     }
 
     #[Route('/configure/tracked-food/{id}/edit', name: 'tracked-food-edit', methods: ['GET', 'POST'])]
-    public function editTrackedFood(Request $request, $id, TrackedFoodRepository $trackedFoodRepository, EntityManagerInterface $em)
-    {
+    public function editTrackedFood(
+        Request $request,
+        $id,
+        TrackedFoodRepository $trackedFoodRepository,
+        EntityManagerInterface $em
+    ) {
         $trackedFood = $trackedFoodRepository->find($id);
         if (!$trackedFood) {
             throw $this->createNotFoundException();

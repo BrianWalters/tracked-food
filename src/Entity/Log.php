@@ -18,22 +18,28 @@ class Log
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=TrackedFood::class, inversedBy="logs")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $trackedFood;
+    private TrackedFood $trackedFood;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $description;
+    private ?string $description;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private ?\DateTimeInterface $eatenAt;
 
     public function __construct(TrackedFood $trackedFood)
     {
         $this->trackedFood = $trackedFood;
+        $this->eatenAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -54,6 +60,18 @@ class Log
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getEatenAt(): ?\DateTimeInterface
+    {
+        return $this->eatenAt;
+    }
+
+    public function setEatenAt(?\DateTimeInterface $eatenAt): self
+    {
+        $this->eatenAt = $eatenAt;
 
         return $this;
     }

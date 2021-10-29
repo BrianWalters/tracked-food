@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editing Log {{ log.description|default }}{% endblock %}
+
+{% block body %}
+    <main class="container">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <p>
+            <button class="btn btn-primary" type="submit">Save</button>
+            <button class="btn btn-danger" type="submit" name="submit_delete">Delete forever</button>
+        </p>
+        {{ form_end(form) }}
+    </main>
+{% endblock %}
